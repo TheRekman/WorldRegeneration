@@ -157,13 +157,13 @@ namespace WorldRegeneration
             {
                 Config.Write(path);
             }
-
-            if (Config.EnableAutoRegen)
+            
+            if (Config.EnableAutoRegen && !RegenTimer.Enabled)
             {
                 RegenTimer.Elapsed += OnWorldRegeneration;
                 RegenTimer.Start();
             }
-            else
+            else if(!Config.EnableAutoRegen && RegenTimer.Enabled)
             {
                 RegenTimer.Elapsed -= OnWorldRegeneration;
                 RegenTimer.Stop();
