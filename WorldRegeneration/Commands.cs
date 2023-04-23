@@ -45,7 +45,7 @@ namespace WorldRegeneration
                 return;
             }
             Utilities.LoadWorldSection(schematicPath, Rectangle.Empty, false);
-            WorldRegeneration.lastWorldID = args.Parameters[0];
+            WorldRegeneration.lastWorldID = schematicPath;
         }
 
         public static void RegenWorld(CommandArgs args)

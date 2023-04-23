@@ -114,6 +114,9 @@ namespace WorldRegeneration
             {
                 RegenTimer.Elapsed += OnWorldRegeneration;
                 RegenTimer.Start();
+                string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", Main.worldID));
+                if (!File.Exists(schematicPath))
+                    Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
             }
         }
 
