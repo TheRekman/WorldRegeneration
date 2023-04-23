@@ -41,7 +41,7 @@ namespace WorldRegeneration
                 schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", Main.worldID));
             if (!File.Exists(schematicPath))
             {
-                args.Player.SendErrorMessage("Invalid world file '{0}'!", args.Parameters[0]);
+                args.Player.SendErrorMessage("Invalid world file '{0}'!", schematicPath);
                 return;
             }
             Utilities.LoadWorldSection(schematicPath, Rectangle.Empty, false);

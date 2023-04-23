@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldRegeneration", "WorldRegeneration\WorldRegeneration.csproj", "{68D50D09-E9C7-460B-B157-76F7618012F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldRegeneration", "WorldRegeneration\WorldRegeneration.csproj", "{68D50D09-E9C7-460B-B157-76F7618012F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC8BB357-6A61-4A7F-BA51-B8383DFBEA54}
 	EndGlobalSection
 EndGlobal
