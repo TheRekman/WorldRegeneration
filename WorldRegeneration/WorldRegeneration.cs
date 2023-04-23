@@ -50,6 +50,7 @@ namespace WorldRegeneration
         {
             ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
             ServerApi.Hooks.NetGetData.Register(this, GetData);
+            ServerApi.Hooks.GamePostInitialize.Register(this, OnPostInitialize);
             GeneralHooks.ReloadEvent += OnReload;
             GetDataHandlers.InitGetDataHandler();
         }
@@ -60,6 +61,7 @@ namespace WorldRegeneration
             {
                 ServerApi.Hooks.GameInitialize.Deregister(this, OnInitialize);
                 ServerApi.Hooks.NetGetData.Deregister(this, GetData);
+                ServerApi.Hooks.GamePostInitialize.Deregister(this, OnPostInitialize);
                 GeneralHooks.ReloadEvent -= OnReload;
                 RegenTimer.Elapsed -= OnWorldRegeneration;
                 RegenTimer.Stop();
@@ -114,11 +116,16 @@ namespace WorldRegeneration
             {
                 RegenTimer.Elapsed += OnWorldRegeneration;
                 RegenTimer.Start();
-                string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", Main.worldID));
-                if (!File.Exists(schematicPath))
-                    Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
             }
         }
+
+        private void OnPostInitialize(EventArgs args)
+        {
+            string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", Main.worldID));
+            if (Config.EnableAutoRegen && !File.Exists(schematicPath))
+                Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
+        }
+
 
         private void OnWorldRegeneration(object Sender, EventArgs args)
         {
