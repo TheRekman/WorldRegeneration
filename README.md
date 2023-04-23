@@ -24,13 +24,12 @@ A plugin for TShock. Provides world save and load depending from time period or 
 - worldregen time - Information on next world regeneration.
 - worldregen force [seconds] - Force the world regeneration to 5 minutes, or setted time.
 - worldregen list - List available world IDs.
-- loadworld [worldID] - Load world from file with name, otherwise load world with current Main.worldID.
-- saveworld [worldID] - Save world in file with name, otherwise save in file with Main.worldID.
+- loadworld [name] - Load world from file with name, otherwise load world with current Main.worldID.
+- saveworld [name] - Save world in file with name, otherwise save in file with Main.worldID.
 
 ### RU
 
-
-A plugin for TShock. Provides world save and load depending from time period or command.
+Плагин дял TShock. Предоставляющий возможность сохранять и загружать файлы мира автоматически.
 
 ## Config
 
@@ -47,9 +46,11 @@ A plugin for TShock. Provides world save and load depending from time period or 
 - RegenerationInterval - временной период для авто регенирации мира;
 - IgnoreChests - игнорирует загрузку всех сундуков из файла;
 - ResetWorldGenStatus - принимает стандартные значения для событий мира, таких как убийство босса, при регенерации;
+
 ## Commands
+
 - worldregen time - информация о следующей регенерации.
 - worldregen force [seconds] - форсировать регенерацию на 5 минут, или заданное время.
 - worldregen list - список доступных ID миров.
 - loadworld [name] - загружает мир из файла с заданным именем, иначе загружает мир с ID активного мира.
-- saveworld [worldID] - сохраняет мир в файл с заданным именем, иначе сохраняет в файл с ID активного мира.
+- saveworld [name] - сохраняет мир в файл с заданным именем, иначе сохраняет в файл с ID активного мира.
