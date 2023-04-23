@@ -92,9 +92,12 @@ namespace WorldRegeneration
                     args.Player.SendInfoMessage("World Regeneration will be in{0}{1}{2}.", NextRegen.Hours > 0 ? NextRegen.Hours == 1 ? " " + NextRegen.Hours + " Hour" : " " + NextRegen.Hours + " Hours" : "", NextRegen.Minutes > 0 ? NextRegen.Minutes == 1 ? " " + NextRegen.Minutes + " Minute" : " " + NextRegen.Minutes + " Minutes" : "", NextRegen.Seconds > 0 ? NextRegen.Seconds == 1 ? " " + NextRegen.Seconds + " Second" : " " + NextRegen.Seconds + " Seconds" : "");
                     break;
                 case "force":
-                    int time = 300;
-                    if (args.Parameters.Count == 2 && args.Parameters[1] == "1")
-                        time = 60;
+                    int time = 0;
+                    if (!(args.Parameters.Count == 2) || !int.TryParse(args.Parameters[1], out time))
+                    {
+                        time = 300;
+                        args.Player.SendInfoMessage("Time automatically setted to 5 minutes.");
+                    }
                     args.Player.SendInfoMessage("You forced World Regeneration.");
                     WorldRegeneration.WorldRegenCheck = DateTime.UtcNow.AddSeconds(-WorldRegeneration.Config.RegenerationInterval + time + 1);
                     break;
@@ -138,7 +141,7 @@ namespace WorldRegeneration
 
                         List<string> lines = new List<string> {
                         "time - Information on next world regeneration.",
-                        "force [1] - Force the world regeneration to 5 minutes, or last minute.",
+                        "force [seconds] - Force the world regeneration to 5 minutes, or setted time.",
                         "list - List available world IDs.",
                         };
                         PaginationTools.SendPage(
