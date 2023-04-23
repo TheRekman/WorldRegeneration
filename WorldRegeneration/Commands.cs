@@ -29,20 +29,23 @@ namespace WorldRegeneration
 
         public static void LoadWorld(CommandArgs args)
         {
-            if (args.Parameters.Count == 1)
+            if(args.Parameters.Count > 1)
             {
-                string schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", args.Parameters[0]));
-                if (!File.Exists(schematicPath))
-                {
-                    args.Player.SendErrorMessage("Invalid world file '{0}'!", args.Parameters[0]);
-                    return;
-                }
-                Utilities.LoadWorldSection(schematicPath, Rectangle.Empty, false);
-                if (args.Parameters[0] == WorldRegeneration.lastWorldID)
-                    WorldRegeneration.lastWorldID = args.Parameters[0];
+                args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /loadworld [name]");
+                return;
             }
+            string schematicPath = null;
+            if (args.Parameters.Count == 1)
+                schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", args.Parameters[0]));
             else
-                args.Player.SendErrorMessage("Proper syntax: /loadworld <worldid>");
+                schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", Main.worldID));
+            if (!File.Exists(schematicPath))
+            {
+                args.Player.SendErrorMessage("Invalid world file '{0}'!", args.Parameters[0]);
+                return;
+            }
+            Utilities.LoadWorldSection(schematicPath, Rectangle.Empty, false);
+            WorldRegeneration.lastWorldID = args.Parameters[0];
         }
 
         public static void RegenWorld(CommandArgs args)
