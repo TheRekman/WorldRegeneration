@@ -137,7 +137,7 @@ namespace WorldRegeneration
             for (int a = 0; a < totalSigns; a++)
             {
                 Sign sign = reader.ReadSign();
-                for (int s = index; s < 1000; s++)
+                for (int s = index; s < Main.sign.Length; s++)
                 {
                     if (TShock.Regions.InAreaRegion(sign.x, sign.y).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
                     {
@@ -171,7 +171,7 @@ namespace WorldRegeneration
                 for (int a = 0; a < totalChests; a++)
                 {
                     Chest chest = reader.ReadChest();
-                    for (int c = index; c < 1000; c++)
+                    for (int c = index; c < Main.chest.Length; c++)
                     {
                         if (TShock.Regions.InAreaRegion(chest.x, chest.y).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
                         {

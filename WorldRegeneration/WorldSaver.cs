@@ -62,7 +62,7 @@ namespace WorldRegeneration
                 }
 
                 writer.Write(totalChests);
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < Main.chest.Length; i++)
                 {
                     Chest chest = Main.chest[i];
                     if (chest != null)
@@ -73,7 +73,7 @@ namespace WorldRegeneration
 
                 #region Sign Data
                 int totalSigns = 0;
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < Main.sign.Length; i++)
                 {
                     Sign sign = Main.sign[i];
                     if (sign != null)
@@ -83,7 +83,7 @@ namespace WorldRegeneration
                 }
 
                 writer.Write(totalSigns);
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < Main.sign.Length; i++)
                 {
                     Sign sign = Main.sign[i];
                     if (sign != null && sign.text != null)
