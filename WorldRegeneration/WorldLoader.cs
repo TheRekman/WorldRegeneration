@@ -164,7 +164,7 @@ namespace WorldRegeneration
             int index = 0;
             if (!WorldRegeneration.Config.IgnoreChests)
             {
-                for (int a = 0; a < (WorldRegeneration.Config.UseInfiniteChests ? iccount : totalChests); a++)
+                for (int a = 0; a < totalChests; a++)
                 {
                     Chest chest = reader.ReadChest();
                     for (int c = index; c < 1000; c++)

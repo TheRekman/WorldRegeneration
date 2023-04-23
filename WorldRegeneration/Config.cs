@@ -11,7 +11,6 @@ namespace WorldRegeneration
         public int MaxZRegion = 0;
         public int RegenerationInterval = 21600;
         public bool IgnoreChests = false;
-        public bool UseInfiniteChests = false;
         public bool ResetWorldGenStatus = false;
 
         public void Write(string path)
