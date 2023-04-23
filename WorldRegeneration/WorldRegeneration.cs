@@ -135,16 +135,19 @@ namespace WorldRegeneration
                 WorldRegenCheck = DateTime.UtcNow;
                 var worldData = from s in Directory.EnumerateFiles("worldregen", "world-*.twd")
                                 select s.Substring(17, s.Length - 21);
-
                 if (worldData.Count() > 0)
                 {
-                    Random w = new Random();
-                    int selectedWorld = w.Next(0, worldData.Count() - 1);
-                    string worldPath = Path.Combine("worldregen", string.Format("world-{0}.twd", worldData.ElementAt(selectedWorld)));
-                    TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", worldData.ElementAt(selectedWorld)));
+                    var worldId = Main.worldID.ToString();
+                    if (!worldData.Contains(worldId))
+                    {
+                        Random rnd = new Random();
+                        worldId = worldData.ElementAt(rnd.Next(0, worldData.Count() - 1));
+                    }
+                    string worldPath = Path.Combine("worldregen", string.Format("world-{0}.twd", worldId));
+                    TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", worldId));
                     Utilities.RegenerateWorld(worldPath);
                     hasWorldRegenerated = false;
-                    lastWorldID = worldData.ElementAt(selectedWorld);
+                    lastWorldID = worldId;
                 }
             }
         }
