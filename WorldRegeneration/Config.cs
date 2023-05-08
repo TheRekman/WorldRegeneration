@@ -12,6 +12,7 @@ namespace WorldRegeneration
         public int RegenerationInterval = 21600;
         public bool IgnoreChests = false;
         public bool ResetWorldGenStatus = false;
+        public bool UseVanillaWorldFiles = true;
 
         public void Write(string path)
         {
