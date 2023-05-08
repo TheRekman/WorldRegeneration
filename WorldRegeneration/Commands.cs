@@ -11,41 +11,40 @@ namespace WorldRegeneration
 {
     public static class Commands
     {
+        public static string GetWorldPath(CommandArgs args, string properSyntax)
+        {
+            if(args.Parameters.Count > 1)
+            {
+                args.Player.SendErrorMessage("Invalid syntax! Proper syntax: {0}".SFormat(properSyntax));
+                return null;
+            }
+            var worldName = string.Empty;
+            if (args.Parameters.Count == 1)
+                worldName = args.Parameters[0];
+            else
+            {
+                worldName = Main.worldName;
+                args.Player.SendInfoMessage("World name was not defined. Current world name was taken.");
+            }
+            return WorldRegeneration.FilesManager.GenerateWorldPath(worldName, Main.worldID.ToString());
+        }
+
         public static void SaveWorld(CommandArgs args)
         {
-            if (args.Parameters.Count > 1)
-            {
-                args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /saveworld [name]");
-                return;
-            }
-
-            string worldid = Main.worldID.ToString();
-            if (args.Parameters.Count > 0)
-                worldid = args.Parameters[0];
-
-            string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", worldid));
+            string schematicPath = GetWorldPath(args, "/saveworld [name]");
             Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
         }
 
         public static void LoadWorld(CommandArgs args)
         {
-            if(args.Parameters.Count > 1)
-            {
-                args.Player.SendErrorMessage("Invalid syntax! Proper syntax: /loadworld [name]");
-                return;
-            }
-            string schematicPath = null;
-            if (args.Parameters.Count == 1)
-                schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", args.Parameters[0]));
-            else
-                schematicPath = Path.Combine("worldregen", String.Format("world-{0}.twd", Main.worldID));
+            string schematicPath = GetWorldPath(args, "/loadworld [name]");
             if (!File.Exists(schematicPath))
             {
-                args.Player.SendErrorMessage("Invalid world file '{0}'!", schematicPath);
+                args.Player.SendErrorMessage("Invalid world file '{0}'!", Path.GetFileName(schematicPath));
                 return;
             }
             Utilities.LoadWorldSection(schematicPath, Rectangle.Empty, false);
-            WorldRegeneration.lastWorldID = schematicPath;
+            WorldRegeneration.lastWorldID = WorldRegeneration.FilesManager.GetWorldFileInfo(schematicPath).Id;
         }
 
         public static void RegenWorld(CommandArgs args)

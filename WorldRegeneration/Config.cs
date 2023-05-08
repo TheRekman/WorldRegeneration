@@ -13,7 +13,9 @@ namespace WorldRegeneration
         public bool IgnoreChests = false;
         public bool ResetWorldGenStatus = false;
         public bool UseVanillaWorldFiles = true;
-        public string TargetWorldNameFormat = "{0}-{1}-WR.wld";
+        public string TargetWorldNameFormat = "{0}-{1}-WR";
+        public bool UseSpecificFileName = false;
+        public string specificName = "WordRegeneration";
 
         public void Write(string path)
         {

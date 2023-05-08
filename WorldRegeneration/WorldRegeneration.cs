@@ -35,6 +35,7 @@ namespace WorldRegeneration
         }
 
         public static Config Config { get; set; }
+        public static WorldFilesManager FilesManager { get; set; }
 
         static readonly Timer RegenTimer = new Timer(1000);
         public static DateTime WorldRegenCheck = DateTime.UtcNow;
@@ -83,6 +84,12 @@ namespace WorldRegeneration
             {
                 Config.Write(path);
             }
+            FilesManager = new WorldFilesManager(
+                Config.UseVanillaWorldFiles ? WorldFilesManager.GetMainSaveFolder : WorldFilesManager.GetLocalSaveFolder,
+                Config.UseVanillaWorldFiles ? Config.TargetWorldNameFormat : "world-{1}",
+                Config.specificName,
+                Config.UseSpecificFileName
+                );
 
             #region Commands
             Action<Command> Add = c =>
@@ -125,7 +132,7 @@ namespace WorldRegeneration
 
         private void OnPostInitialize(EventArgs args)
         {
-            string schematicPath = Path.Combine(GetWorldsDirectory(), Config.TargetWorldNameFormat.SFormat(Main.worldName, Main.worldID));
+            string schematicPath = FilesManager.GenerateWorldPath();
             if (Config.EnableAutoRegen && !File.Exists(schematicPath))
                 Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
         }
@@ -147,24 +154,19 @@ namespace WorldRegeneration
             if ((DateTime.UtcNow - WorldRegenCheck).TotalSeconds >= Config.RegenerationInterval)
             {
                 WorldRegenCheck = DateTime.UtcNow;
-                var worlds = GetWorldsPaths();
-                var worldData = GetWorldsPaths().Select(s => (FullWorldPath: s, WorldId: GetWorldId(Path.GetFileName(s))));
-                if (worldData.Count() > 0)
+                var worldPath = FilesManager.GetCurrentWorldPath();
+                if(worldPath == null)
                 {
-                    var worldId = Main.worldID.ToString();
-                    if (!worldData.Any(wd => wd.WorldId == worldId))
-                    {
-                        Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY,
+                    Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY,
                                                    Path.Combine(GetWorldsDirectory(),
                                                                 Config.TargetWorldNameFormat.SFormat(Main.worldName, Main.worldID)));
-                        return;
-                    }
-                    var worldPath = worldData.First(wd => wd.WorldId == worldId).FullWorldPath;
-                    TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", worldId));
-                    Utilities.RegenerateWorld(worldPath);
-                    hasWorldRegenerated = false;
-                    lastWorldID = worldId;
+                    TShock.Log.ConsoleError(string.Format("World file with current worldId was not found! World was automatically saved."));
+                    return;
                 }
+                TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", Main.worldID));
+                Utilities.RegenerateWorld(worldPath);
+                hasWorldRegenerated = false;
+                lastWorldID = Main.worldID.ToString();
             }
         }
 
