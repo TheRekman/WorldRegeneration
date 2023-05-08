@@ -70,6 +70,7 @@ namespace WorldRegeneration
                     LoadEntities(reader);
                     reader.BaseStream.Seek(weightetPlatesPosition, SeekOrigin.Begin);
                     LoadWeightetPlates(reader);
+                    ResetSection(0, 0, Main.maxTilesX, Main.maxTilesY);
                     TSPlayer.All.SendInfoMessage("Successfully regenerated the world.");
                 }
             });
@@ -211,7 +212,7 @@ namespace WorldRegeneration
                     byte b3;
                     byte b2;
                     byte b = (b2 = (b3 = 0));
-                    ITile tile = Main.tile[x, y];
+                    ITile tile = new Tile();
                     byte b4 = reader.ReadByte();
                     bool flag = false;
                     if ((b4 & 1) == 1)
@@ -399,9 +400,10 @@ namespace WorldRegeneration
                             WorldGen.tileCounts[num2] += k + 1;
                         }
                     }
+                    if (!TShock.Regions.InAreaRegion(x, y).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                        Main.tile[x, y].CopyFrom(tile);
                     while (k > 0)
                     {
-                        
                         y++;
                         if (!TShock.Regions.InAreaRegion(x, y).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
                             Main.tile[x, y].CopyFrom(tile);
@@ -496,6 +498,22 @@ namespace WorldRegeneration
             if (WorldFile._versionNumber < 115)
             {
                 WorldFile.FixDresserChests();
+            }
+        }
+
+        public static void ResetSection(int x, int y, int x2, int y2)
+        {
+            int lowX = Netplay.GetSectionX(x);
+            int highX = Netplay.GetSectionX(x2);
+            int lowY = Netplay.GetSectionY(y);
+            int highY = Netplay.GetSectionY(y2);
+            foreach (RemoteClient sock in Netplay.Clients.Where(s => s.IsActive))
+            {
+                for (int i = lowX; i <= highX; i++)
+                {
+                    for (int j = lowY; j <= highY; j++)
+                        sock.TileSections[i, j] = false;
+                }
             }
         }
     }

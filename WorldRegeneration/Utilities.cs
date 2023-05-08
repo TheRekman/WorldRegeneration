@@ -18,10 +18,13 @@ namespace WorldRegeneration
         {
             if(WorldRegeneration.Config.UseVanillaWorldFiles)
             {
-                var oldPath = Main.WorldPath;
-                Main.WorldPath = path;
+                var oldPath = Main.ActiveWorldFileData.Path;
+                var oldName = Main.worldName;
+                Main.ActiveWorldFileData._path = path;
+                Main.worldName = Path.GetFileName(path).Split('.')[0];
                 Terraria.IO.WorldFile.SaveWorld(false);
-                Main.WorldPath = oldPath;
+                Main.ActiveWorldFileData._path = oldPath; 
+                Main.worldName = oldName;
                 return;
             }    
             WorldSaver.SaveWorldSection(x, y, x2, y2, path);
@@ -38,6 +41,6 @@ namespace WorldRegeneration
             WorldLoader.LoadWorldSection(path, rect, useRect, informPlayers);
         }
 
-        public static void RegenerateWorld(string path) => SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, path);
+        public static void RegenerateWorld(string path) => Utilities.LoadWorldSection(path, Rectangle.Empty, false);
     }
 }

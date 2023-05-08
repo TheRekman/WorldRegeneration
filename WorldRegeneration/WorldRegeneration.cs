@@ -237,7 +237,7 @@ namespace WorldRegeneration
         private string GetWorldsDirectory()
         {
             if (Config.UseVanillaWorldFiles)
-                return Path.Combine(Main.SavePath, "World");
+                return Path.Combine(Main.SavePath, "Worlds");
             return Path.Combine("worldregen");
         }
 
