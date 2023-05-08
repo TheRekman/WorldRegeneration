@@ -114,8 +114,9 @@ namespace WorldRegeneration
                     if (!PaginationTools.TryParsePageNumber(args.Parameters, 1, args.Player, out page))
                         return;
 
-                    var schematics = from s in Directory.EnumerateFiles("worldregen", "world-*.twd")
-                                     select s.Substring(17, s.Length - 21);
+                    var schematics = WorldRegeneration.FilesManager.GetFiles()
+                                                                   .Select(p => WorldRegeneration.FilesManager.GetWorldFileInfo(p))
+                                                                   .Select(w => w.Id);
                     PaginationTools.SendPage(args.Player, page, PaginationTools.BuildLinesFromTerms(schematics),
                         new PaginationTools.Settings
                         {
