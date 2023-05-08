@@ -7,6 +7,10 @@ using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
 using TShockAPI.Hooks;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace WorldRegeneration
 {
@@ -121,7 +125,7 @@ namespace WorldRegeneration
 
         private void OnPostInitialize(EventArgs args)
         {
-            string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", Main.worldID));
+            string schematicPath = Path.Combine(GetWorldsDirectory(), Config.TargetWorldNameFormat.SFormat(Main.worldName, Main.worldID));
             if (Config.EnableAutoRegen && !File.Exists(schematicPath))
                 Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
         }
@@ -143,17 +147,19 @@ namespace WorldRegeneration
             if ((DateTime.UtcNow - WorldRegenCheck).TotalSeconds >= Config.RegenerationInterval)
             {
                 WorldRegenCheck = DateTime.UtcNow;
-                var worldData = from s in Directory.EnumerateFiles("worldregen", "world-*.twd")
-                                select s.Substring(17, s.Length - 21);
+                var worlds = GetWorldsPaths();
+                var worldData = GetWorldsPaths().Select(s => (FullWorldPath: s, WorldId: GetWorldId(Path.GetFileName(s))));
                 if (worldData.Count() > 0)
                 {
                     var worldId = Main.worldID.ToString();
-                    if (!worldData.Contains(worldId))
+                    if (!worldData.Any(wd => wd.WorldId == worldId))
                     {
-                        Random rnd = new Random();
-                        worldId = worldData.ElementAt(rnd.Next(0, worldData.Count() - 1));
+                        Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY,
+                                                   Path.Combine(GetWorldsDirectory(),
+                                                                Config.TargetWorldNameFormat.SFormat(Main.worldName, Main.worldID)));
+                        return;
                     }
-                    string worldPath = Path.Combine("worldregen", string.Format("world-{0}.twd", worldId));
+                    var worldPath = worldData.First(wd => wd.WorldId == worldId).FullWorldPath;
                     TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", worldId));
                     Utilities.RegenerateWorld(worldPath);
                     hasWorldRegenerated = false;
@@ -213,6 +219,31 @@ namespace WorldRegeneration
                     TShock.Log.Error(ex.ToString());
                 }
             }
+        }
+
+        private IEnumerable<string> GetWorldsPaths()
+        {
+            var worldFormat = Config.UseVanillaWorldFiles ? Config.TargetWorldNameFormat.SFormat("*", "*") : "world-*.twd";
+            return Directory.EnumerateFiles(GetWorldsDirectory(), worldFormat);
+        }
+
+        private string GetFullWorldPath(string worldName, string worldID)
+        {
+            var worldFormat = Config.UseVanillaWorldFiles ? Config.TargetWorldNameFormat.SFormat(worldName, worldID)
+                                                          : "world-{0}.twd".SFormat(worldID);
+            return Path.Combine(GetWorldsDirectory(), worldFormat);
+        }
+
+        private string GetWorldsDirectory()
+        {
+            if (Config.UseVanillaWorldFiles)
+                return Path.Combine(Main.SavePath, "World");
+            return Path.Combine("worldregen");
+        }
+
+        private string GetWorldId(string file)
+        {
+            return file.Split('-', '.')[1];
         }
     }
 }
