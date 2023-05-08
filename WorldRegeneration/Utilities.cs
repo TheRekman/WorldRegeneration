@@ -34,7 +34,8 @@ namespace WorldRegeneration
         {
             if (WorldRegeneration.Config.UseVanillaWorldFiles)
             {
-                var loader = new VanillaWorldLoader();
+                var settings = new WorldLoadSettings() { LoadChests = !WorldRegeneration.Config.IgnoreChests };
+                var loader = new VanillaWorldLoader(settings);
                 loader.LoadWorld(path);
                 return;
             }

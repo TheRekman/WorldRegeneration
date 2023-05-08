@@ -138,7 +138,8 @@ namespace WorldRegeneration
                     TSPlayer.All.SendMessage(string.Format("The world will regenerate in {0} minute{1}.",
                                                            RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"),
                                                            50, 255, 130);
-                    TShock.Log.ConsoleInfo(string.Format("The world will regenerate in {0} minute{1}.", RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"));
+                    TShock.Log.ConsoleInfo(string.Format("The world will regenerate in {0} minute{1}.",
+                                                         RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"));
                 }
                 if (RegenSpan.Minutes == 0)
                     hasWorldRegenerated = true;

@@ -20,6 +20,13 @@ namespace WorldRegeneration
 {
     public class VanillaWorldLoader
     {
+        private WorldLoadSettings _settings;
+
+        public VanillaWorldLoader(WorldLoadSettings settings = null)
+        {
+            _settings = settings == null ? new WorldLoadSettings() : settings;
+        }
+
         public void LoadWorld(string path)
         {
             Task.Factory.StartNew(() =>
@@ -59,17 +66,31 @@ namespace WorldRegeneration
                     var npcPosition = positions[4];
                     var tileEntityPosition = positions[5];
                     var weightetPlatesPosition = positions[6];
-
-                    reader.BaseStream.Seek(tilePosition, SeekOrigin.Begin);
-                    LoadTiles(reader, importance);
-                    reader.BaseStream.Seek(chestPosition, SeekOrigin.Begin);
-                    LoadChests(reader);
-                    reader.BaseStream.Seek(signsPosition, SeekOrigin.Begin);
-                    LoadSigns(reader);
-                    reader.BaseStream.Seek(tileEntityPosition, SeekOrigin.Begin);
-                    LoadEntities(reader);
-                    reader.BaseStream.Seek(weightetPlatesPosition, SeekOrigin.Begin);
-                    LoadWeightetPlates(reader);
+                    if(_settings.LoadTiles)
+                    {
+                        reader.BaseStream.Seek(tilePosition, SeekOrigin.Begin);
+                        LoadTiles(reader, importance);
+                    }
+                    if (_settings.LoadChests)
+                    {
+                        reader.BaseStream.Seek(chestPosition, SeekOrigin.Begin);
+                        LoadChests(reader);
+                    }
+                    if (_settings.LoadSigns)
+                    {
+                        reader.BaseStream.Seek(signsPosition, SeekOrigin.Begin);
+                        LoadSigns(reader);
+                    }
+                    if (_settings.LoadEnities)
+                    {
+                        reader.BaseStream.Seek(tileEntityPosition, SeekOrigin.Begin);
+                        LoadEntities(reader);
+                    }
+                    if (_settings.LoadWeightetPlates)
+                    {
+                        reader.BaseStream.Seek(weightetPlatesPosition, SeekOrigin.Begin);
+                        LoadWeightetPlates(reader);
+                    }
                     ResetSection(0, 0, Main.maxTilesX, Main.maxTilesY);
                     TSPlayer.All.SendInfoMessage("Successfully regenerated the world.");
                 }
