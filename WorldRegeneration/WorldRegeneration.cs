@@ -17,22 +17,10 @@ namespace WorldRegeneration
     [ApiVersion(2, 1)]
     public class WorldRegeneration : TerrariaPlugin
     {
-        public override Version Version
-        {
-            get { return Assembly.GetExecutingAssembly().GetName().Version; }
-        }
-        public override string Name
-        {
-            get { return "WorldRegeneration"; }
-        }
-        public override string Author
-        {
-            get { return "Marcus101RR, WhiteXZ"; }
-        }
-        public override string Description
-        {
-            get { return "Regenerate a world from a save template with chests and sign information."; }
-        }
+        public override Version Version => Assembly.GetExecutingAssembly().GetName().Version;
+        public override string Name => "WorldRegeneration";
+        public override string Author => "Marcus101RR, WhiteXZ, Rekman";
+        public override string Description => "Regenerate a world from a save template with chests and sign information.";
 
         public static Config Config { get; set; }
         public static WorldFilesManager FilesManager { get; set; }
@@ -94,7 +82,9 @@ namespace WorldRegeneration
             #region Commands
             Action<Command> Add = c =>
             {
-                TShockAPI.Commands.ChatCommands.RemoveAll(c2 => c2.Names.Select(s => s.ToLowerInvariant()).Intersect(c.Names.Select(s => s.ToLowerInvariant())).Any());
+                TShockAPI.Commands.ChatCommands.RemoveAll(c2 => c2.Names.Select(s => s.ToLowerInvariant())
+                                                                        .Intersect(c.Names.Select(s => s.ToLowerInvariant()))
+                                                                        .Any());
                 TShockAPI.Commands.ChatCommands.Add(c);
             };
 
@@ -145,7 +135,9 @@ namespace WorldRegeneration
                 TimeSpan RegenSpan = WorldRegenCheck.AddSeconds(Config.RegenerationInterval) - DateTime.UtcNow;
                 if (RegenSpan.Minutes > 0 && RegenSpan.Minutes < 6 && RegenSpan.Seconds == 0)
                 {
-                    TSPlayer.All.SendMessage(string.Format("The world will regenerate in {0} minute{1}.", RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"), 50, 255, 130);
+                    TSPlayer.All.SendMessage(string.Format("The world will regenerate in {0} minute{1}.",
+                                                           RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"),
+                                                           50, 255, 130);
                     TShock.Log.ConsoleInfo(string.Format("The world will regenerate in {0} minute{1}.", RegenSpan.Minutes, RegenSpan.Minutes == 1 ? "" : "s"));
                 }
                 if (RegenSpan.Minutes == 0)
@@ -158,7 +150,7 @@ namespace WorldRegeneration
                 if(worldPath == null)
                 {
                     Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, FilesManager.GenerateWorldPath());
-                    TShock.Log.ConsoleError(string.Format("World file with current worldId was not found! World was automatically saved."));
+                    TShock.Log.ConsoleError("World file with current worldId was not found! World was automatically saved.");
                     return;
                 }
                 TShock.Log.ConsoleInfo(string.Format("Attempting to regenerate world: {0}.", Main.worldID));
