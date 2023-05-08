@@ -157,9 +157,7 @@ namespace WorldRegeneration
                 var worldPath = FilesManager.GetCurrentWorldPath();
                 if(worldPath == null)
                 {
-                    Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY,
-                                                   Path.Combine(GetWorldsDirectory(),
-                                                                Config.TargetWorldNameFormat.SFormat(Main.worldName, Main.worldID)));
+                    Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, FilesManager.GenerateWorldPath());
                     TShock.Log.ConsoleError(string.Format("World file with current worldId was not found! World was automatically saved."));
                     return;
                 }
@@ -221,31 +219,6 @@ namespace WorldRegeneration
                     TShock.Log.Error(ex.ToString());
                 }
             }
-        }
-
-        private IEnumerable<string> GetWorldsPaths()
-        {
-            var worldFormat = Config.UseVanillaWorldFiles ? Config.TargetWorldNameFormat.SFormat("*", "*") : "world-*.twd";
-            return Directory.EnumerateFiles(GetWorldsDirectory(), worldFormat);
-        }
-
-        private string GetFullWorldPath(string worldName, string worldID)
-        {
-            var worldFormat = Config.UseVanillaWorldFiles ? Config.TargetWorldNameFormat.SFormat(worldName, worldID)
-                                                          : "world-{0}.twd".SFormat(worldID);
-            return Path.Combine(GetWorldsDirectory(), worldFormat);
-        }
-
-        private string GetWorldsDirectory()
-        {
-            if (Config.UseVanillaWorldFiles)
-                return Path.Combine(Main.SavePath, "Worlds");
-            return Path.Combine("worldregen");
-        }
-
-        private string GetWorldId(string file)
-        {
-            return file.Split('-', '.')[1];
         }
     }
 }
