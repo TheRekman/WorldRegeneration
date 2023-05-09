@@ -29,7 +29,6 @@ namespace WorldRegeneration
             worldName = Main.worldName;
             args.Player.SendInfoMessage("World name was not defined. Current world name was taken.");
             return WorldRegeneration.FilesManager.GenerateWorldPath(worldName, Main.worldID.ToString());
-
         }
 
         public static void SaveWorld(CommandArgs args)
@@ -95,7 +94,8 @@ namespace WorldRegeneration
 
                     var schematics = WorldRegeneration.FilesManager.GetFiles()
                                                                    .Select(p => WorldRegeneration.FilesManager.GetWorldFileInfo(p))
-                                                                   .Select(w => w.Id);
+                                                                   .Where(w => w.Id == Main.worldID.ToString())
+                                                                   .Select(w => w.Name);
                     PaginationTools.SendPage(args.Player, page, PaginationTools.BuildLinesFromTerms(schematics),
                         new PaginationTools.Settings
                         {
