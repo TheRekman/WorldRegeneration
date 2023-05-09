@@ -62,7 +62,10 @@ namespace WorldRegeneration
         {
             var files = GetFiles();
             if(_useSpecificWorld)
-                return files.FirstOrDefault(s => Path.GetFileName(s) == _specificWorldName);
+            {
+                var path = GenerateSpecificWorldPath();
+                return File.Exists(path) ? path : null;
+            }
             var worldId = Main.worldID;
             return GetWorldFilePathByID(worldId.ToString());
         }
