@@ -69,5 +69,6 @@ namespace WorldRegeneration
 
         public string GenerateWorldPath() => Path.Combine(_worldsPath, _worldFormat.SFormat(Main.worldName, Main.worldID));
         public string GenerateWorldPath(string name, string id) => Path.Combine(_worldsPath, _worldFormat.SFormat(name, id));
+        public string GenerateSpecificWorldPath() => Path.Combine(_worldsPath, _specificWorldName);
     }
 }

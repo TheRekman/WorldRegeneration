@@ -116,7 +116,7 @@ namespace WorldRegeneration
 
         private void OnPostInitialize(EventArgs args)
         {
-            string schematicPath = FilesManager.GenerateWorldPath();
+            string schematicPath = Config.UseSpecificFileName ? FilesManager.GenerateSpecificWorldPath() : FilesManager.GenerateWorldPath();
             if (Config.EnableAutoRegen && !File.Exists(schematicPath))
                 Utilities.SaveWorldSection(0, 0, Main.maxTilesX, Main.maxTilesY, schematicPath);
         }

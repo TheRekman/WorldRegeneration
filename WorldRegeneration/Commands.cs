@@ -20,13 +20,16 @@ namespace WorldRegeneration
             }
             var worldName = string.Empty;
             if (args.Parameters.Count == 1)
-                worldName = args.Parameters[0];
-            else
             {
-                worldName = Main.worldName;
-                args.Player.SendInfoMessage("World name was not defined. Current world name was taken.");
+                worldName = args.Parameters[0];
+                return WorldRegeneration.FilesManager.GenerateWorldPath(worldName, Main.worldID.ToString());
             }
+            if (WorldRegeneration.Config.UseSpecificFileName)
+                return WorldRegeneration.FilesManager.GenerateSpecificWorldPath();
+            worldName = Main.worldName;
+            args.Player.SendInfoMessage("World name was not defined. Current world name was taken.");
             return WorldRegeneration.FilesManager.GenerateWorldPath(worldName, Main.worldID.ToString());
+
         }
 
         public static void SaveWorld(CommandArgs args)
