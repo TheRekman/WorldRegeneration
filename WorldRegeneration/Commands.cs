@@ -47,39 +47,6 @@ namespace WorldRegeneration
             WorldRegeneration.lastWorldID = WorldRegeneration.FilesManager.GetWorldFileInfo(schematicPath).Id;
         }
 
-        public static void RegenWorld(CommandArgs args)
-        {
-            if (args.Parameters.Count == 1)
-            {
-                string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", args.Parameters[0]));
-                if (!File.Exists(schematicPath))
-                {
-                    args.Player.SendErrorMessage("Invalid world file '{0}'!", args.Parameters[0]);
-                    return;
-                }
-
-                if (args.Parameters[0] != WorldRegeneration.lastWorldID)
-                    WorldRegeneration.lastWorldID = args.Parameters[0];
-
-                WorldRegeneration.lastPath = schematicPath;
-                WorldRegeneration.awaitingSelection = true;
-                args.Player.SendInfoMessage("Please use [i:3611] to select an area.");
-            }
-            else
-            {
-                if (WorldRegeneration.lastWorldID != null)
-                {
-                    string schematicPath = Path.Combine("worldregen", string.Format("world-{0}.twd", WorldRegeneration.lastWorldID));
-                    WorldRegeneration.lastPath = schematicPath;
-                    WorldRegeneration.awaitingSelection = true;
-                    args.Player.SendInfoMessage("Please use [i:3611] to select an area.");
-                }
-
-                else
-                    args.Player.SendErrorMessage("Proper syntax: /regenworld <worldid>");
-            }
-        }
-
         public static void WorldRegen(CommandArgs args)
         {
             string cmd = "help";

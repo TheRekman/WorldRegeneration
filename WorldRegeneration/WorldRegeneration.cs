@@ -105,12 +105,6 @@ namespace WorldRegeneration
                 AllowServer = true,
                 HelpText = "Various sub-commands for world regeneration."
             });
-
-            Add(new Command(Permissions.worldregen, Commands.RegenWorld, "regenworld")
-            {
-                AllowServer = true,
-                HelpText = "Regenerate a portion of the world."
-            });
             #endregion
 
             if (Config.EnableAutoRegen)
