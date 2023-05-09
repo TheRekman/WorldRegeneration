@@ -24,6 +24,8 @@ A plugin for TShock. Provides world save and load depending from time period or 
 - ResetWorldGenStatus - if true restart all info about downed bosses and other game events on world regeneration (Not working on vanilla load);
 - UseVanillaWorldFiles - if true use vanilla world load and save for regen;
 - TargetWorldNameFormat - defines world format;
+> {0} - file name, on default world name.
+> {1} - ID of the world to which the file is attached.
 - UseSpecificName - if true using specific worldFile for save and load;
 - specificName - defines specific world name;
 
@@ -60,6 +62,8 @@ A plugin for TShock. Provides world save and load depending from time period or 
 - ResetWorldGenStatus - принимает стандартные значения для событий мира, таких как убийство босса, при регенерации (Только при не ванильной загрузке);
 - UseVanillaWorldFiles - использовать ванильные загрузку и сохранение;
 - TargetWorldNameFormat - формат имени файлов;
+> {0} - имя файла, по стандарту имя мира.
+> {1} - айди мира к которому файл привязан.
 - UseSpecificName - использовать конкретный файл для загрузки и сохранений;
 - specificName - имя конкретного файла;
 
