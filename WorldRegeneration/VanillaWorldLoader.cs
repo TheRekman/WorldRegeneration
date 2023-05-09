@@ -102,8 +102,8 @@ namespace WorldRegeneration
         {
             PressurePlateHelper.Reset();
             PressurePlateHelper.NeedsFirstUpdate = true;
-            int num = reader.ReadInt32();
-            for (int i = 0; i < num; i++)
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
                 Point point = new Point(reader.ReadInt32(), reader.ReadInt32());
                 if (TShock.Regions.InAreaRegion(point.X / 16, point.Y / 16).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
@@ -114,18 +114,21 @@ namespace WorldRegeneration
 
         private void LoadEntities(BinaryReader reader)
         {
-            TileEntity.ByID.Clear();
-            TileEntity.ByPosition.Clear();
+            TileEntity.ByID = TileEntity.ByID.Where(kv => TShock.Regions.InAreaRegion(kv.Value.Position.X, kv.Value.Position.Y)
+                                                                        .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                                             .ToDictionary(kv => kv.Key, kv => kv.Value);
+            TileEntity.ByPosition = TileEntity.ByPosition.Where(kv => TShock.Regions.InAreaRegion(kv.Value.Position.X, kv.Value.Position.Y)
+                                                                                    .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                                                         .ToDictionary(kv => kv.Key, kv => kv.Value); ;
             int entityCount = reader.ReadInt32();
             int currentID = 0;
             for (int i = 0; i < entityCount; i++)
             {
                 TileEntity tileEntity = TileEntity.Read(reader, false);
-                if (TShock.Regions.InAreaRegion(tileEntity.Position.X, tileEntity.Position.Y).Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                if (TShock.Regions.InAreaRegion(tileEntity.Position.X, tileEntity.Position.Y)
+                                  .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
                     continue;
-                while (TileEntity.ByID[currentID] != null &&
-                       TShock.Regions.InAreaRegion(TileEntity.ByID[currentID].Position.X, TileEntity.ByID[currentID].Position.Y)
-                                     .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                while (TileEntity.ByID.ContainsKey(currentID))
                     currentID++;
                 tileEntity.ID = currentID++;
                 TileEntity.ByID[tileEntity.ID] = tileEntity;
@@ -136,7 +139,7 @@ namespace WorldRegeneration
                 }
                 TileEntity.ByPosition[tileEntity.Position] = tileEntity;
             }
-            TileEntity.TileEntitiesNextID = entityCount;
+            TileEntity.TileEntitiesNextID = currentID;
             List<Point16> list = new List<Point16>();
             foreach (KeyValuePair<Point16, TileEntity> keyValuePair in TileEntity.ByPosition)
             {
@@ -219,7 +222,11 @@ namespace WorldRegeneration
             }
             while (mainSignPos < Sign.maxSigns)
             {
-                Main.sign[i] = null;
+                while (Main.sign[mainSignPos] != null &&
+                       TShock.Regions.InAreaRegion(Main.sign[mainSignPos].x, Main.sign[mainSignPos].y)
+                                     .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                    mainSignPos++;
+                Main.sign[mainSignPos] = null;
                 mainSignPos++;
             }
         }
@@ -513,7 +520,11 @@ namespace WorldRegeneration
             }
             while (mainChestPos < Main.chest.Length)
             {
-                Main.chest[mainChestPos] = null;
+                while (Main.chest[mainChestPos] != null &&
+                      TShock.Regions.InAreaRegion(Main.chest[mainChestPos].x, Main.chest[mainChestPos].y)
+                                    .Any(r => r != null && r.Z >= WorldRegeneration.Config.MaxZRegion))
+                    mainChestPos++;
+                    Main.chest[mainChestPos] = null;
                 mainChestPos++; 
             }
             if (WorldFile._versionNumber < 115)
