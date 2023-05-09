@@ -17,7 +17,7 @@ namespace WorldRegeneration
         private string _specificWorldName;
         private bool _useSpecificWorld;
 
-        private Regex WorldFileParser => new Regex(_worldFormat.SFormat(@"(?<name>\w+)", @"(?<id>\w+)") + @"\.(wld|twd)");
+        private Regex WorldFileParser => new Regex(_worldFormat.SFormat(@"(?<name>\w+)", @"(?<id>\w+)").Replace(".", @"\."));
         public static string GetMainSaveFolder => Path.Combine(Main.SavePath, "Worlds");
         public static string GetLocalSaveFolder => Path.Combine(TShock.SavePath, "WorldRegen");
 
@@ -40,16 +40,16 @@ namespace WorldRegeneration
         {
             var files = GetFiles();
             var regex = WorldFileParser;
-            var v = GetFiles().Select(s =>
+            var matches = GetFiles().Select(s =>
             {
                 var match = regex.Match(Path.GetFileName(s));
                 return (Path: s, Name: match.Groups["name"].Value, Id: match.Groups["id"].Value);
             }).Where(f => f.Id == id);
-            if (v.Count() > 1)
-                v = v.Where(m => Main.worldName == m.Name);
-            if (!(v.Count() > 0))
+            if (matches.Count() > 1)
+                matches = matches.Where(m => Main.worldName == m.Name);
+            if (!(matches.Count() > 0))
                 return null;
-            return v.First().Path;
+            return matches.First().Path;
         }
 
         public (string FullPath, string Name, string Id) GetWorldFileInfo(string path)
@@ -67,7 +67,7 @@ namespace WorldRegeneration
             return GetWorldFilePathByID(worldId.ToString());
         }
 
-        public string GenerateWorldPath() => Path.Combine(_worldsPath, _worldFormat.SFormat(Main.worldName, Main.worldID));
-        public string GenerateWorldPath(string name, string id) => Path.Combine(_worldsPath, _worldFormat.SFormat(name, id));
+        public string GenerateWorldPath() => Path.Combine(_worldsPath, _worldFormat.SFormat(Main.worldName, Main.worldID) + ".wld");
+        public string GenerateWorldPath(string name, string id) => Path.Combine(_worldsPath, _worldFormat.SFormat(name, id) + ".wld");
     }
 }
